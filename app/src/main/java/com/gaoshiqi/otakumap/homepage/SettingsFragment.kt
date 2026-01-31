@@ -3,6 +3,7 @@ package com.gaoshiqi.otakumap.homepage
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -79,6 +80,15 @@ class SettingsFragment : Fragment() {
         binding.btnFeedback.setOnClickListener {
             showToast(getString(R.string.settings_feedback_message))
         }
+
+        binding.btnPrivacyPolicy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(PRIVACY_POLICY_URL))
+            startActivity(intent)
+        }
+    }
+
+    companion object {
+        private const val PRIVACY_POLICY_URL = "https://github.com/GhaSiKey/BangumiAPP/blob/main/docs/PRIVACY_POLICY_EN.md"
     }
 
     private fun handleAboutClick() {

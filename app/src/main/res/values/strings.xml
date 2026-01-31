@@ -137,6 +137,7 @@
     <string name="settings_other">Other</string>
     <string name="settings_about">About</string>
     <string name="settings_feedback">Feedback</string>
+    <string name="settings_privacy_policy">Privacy Policy</string>
     <string name="settings_version_format">Version: %s</string>
     <string name="settings_version_unknown">Version: Unknown</string>
     <string name="settings_about_message">Bangumi Pilgrimage App\nDedicated to providing the best pilgrimage experience for anime fans</string>

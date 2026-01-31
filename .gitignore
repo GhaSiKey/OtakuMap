@@ -15,6 +15,7 @@
 local.properties
 /CLAUDE.md
 /.idea/copilot.data.migration.ask2agent.xml
+/.idea/inspectionProfiles/Project_Default.xml
 /.kiro/
 /.claude/
 /docs/api-trending-subjects.md
