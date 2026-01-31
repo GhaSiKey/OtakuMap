@@ -49,8 +49,9 @@
 - **相关文件**: `app/src/main/AndroidManifest.xml:17`
 
 ### 6. 代码混淆
-- [ ] 启用 R8 混淆: `isMinifyEnabled = true`
-- [ ] 配置 ProGuard 规则 (Retrofit, Glide, Room, Google Maps)
+- [x] 启用 R8 混淆: `isMinifyEnabled = true`
+- [x] 启用资源压缩: `isShrinkResources = true`
+- [x] 配置 ProGuard 规则 (Retrofit, Glide, Room, Google Maps, Gson, Compose)
 - **相关文件**:
   - `app/build.gradle.kts`
   - `app/proguard-rules.pro`
@@ -133,7 +134,7 @@
 |------|---------|------|------|
 | Bearer Token 硬编码 | 高 | `NextClient.kt:16` | ❌ 待修复 |
 | ~~允许 HTTP 明文流量~~ | ~~高~~ | ~~`AndroidManifest.xml:17`~~ | ✅ 已修复 |
-| 代码未混淆 | 中 | `build.gradle.kts` | ❌ 待修复 |
+| ~~代码未混淆~~ | ~~中~~ | ~~`build.gradle.kts`~~ | ✅ 已修复 |
 | 备份规则未配置 | 低 | `backup_rules.xml` | ❌ 待修复 |
 
 ---
