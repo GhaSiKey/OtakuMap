@@ -12,10 +12,14 @@
 ## P0 - 必须完成 (Google Play 强制要求)
 
 ### 1. 隐私政策
-- [ ] 创建隐私政策网页/页面
-- [ ] 在设置页面添加隐私政策入口
+- [x] 创建隐私政策网页/页面
+- [x] 在设置页面添加隐私政策入口
 - [ ] 在 Play Console 填写隐私政策 URL
-- **相关文件**: `app/src/main/java/com/gaoshiqi/otakumap/homepage/SettingsFragment.kt`
+- **隐私政策 URL**: https://github.com/GhaSiKey/BangumiAPP/blob/main/docs/PRIVACY_POLICY_EN.md
+- **相关文件**:
+  - `docs/PRIVACY_POLICY.md` (中文)
+  - `docs/PRIVACY_POLICY_EN.md` (英文)
+  - `app/src/main/java/com/gaoshiqi/otakumap/homepage/SettingsFragment.kt`
 
 ### 2. 数据安全声明
 - [ ] 在 Play Console 填写数据安全表单
