@@ -44,8 +44,8 @@
 ## P1 - 强烈建议 (提升审核通过率)
 
 ### 5. 网络安全配置
-- [ ] 关闭明文流量: `android:usesCleartextTraffic="false"`
-- [ ] 确认所有 API 使用 HTTPS (已确认)
+- [x] 关闭明文流量: `android:usesCleartextTraffic="false"`
+- [x] 确认所有 API 使用 HTTPS (已确认)
 - **相关文件**: `app/src/main/AndroidManifest.xml:17`
 
 ### 6. 代码混淆
@@ -129,12 +129,12 @@
 
 ## 当前发现的安全问题
 
-| 问题 | 严重程度 | 位置 |
-|------|---------|------|
-| Bearer Token 硬编码 | 高 | `NextClient.kt:16` |
-| 允许 HTTP 明文流量 | 高 | `AndroidManifest.xml:17` |
-| 代码未混淆 | 中 | `build.gradle.kts` |
-| 备份规则未配置 | 低 | `backup_rules.xml` |
+| 问题 | 严重程度 | 位置 | 状态 |
+|------|---------|------|------|
+| Bearer Token 硬编码 | 高 | `NextClient.kt:16` | ❌ 待修复 |
+| ~~允许 HTTP 明文流量~~ | ~~高~~ | ~~`AndroidManifest.xml:17`~~ | ✅ 已修复 |
+| 代码未混淆 | 中 | `build.gradle.kts` | ❌ 待修复 |
+| 备份规则未配置 | 低 | `backup_rules.xml` | ❌ 待修复 |
 
 ---
 
