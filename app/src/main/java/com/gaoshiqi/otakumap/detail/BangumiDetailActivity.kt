@@ -22,7 +22,9 @@ import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailIntent
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailState
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailViewModel
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiPointsViewModel
+import com.gaoshiqi.otakumap.search.SearchActivity
 import com.gaoshiqi.otakumap.utils.BangumiUtils
+import com.gaoshiqi.otakumap.widget.TagGroupView
 import com.gaoshiqi.room.AnimeEntity
 import com.gaoshiqi.room.AnimeMarkRepository
 import com.gaoshiqi.image.viewer.ImageViewerActivity
@@ -181,7 +183,11 @@ class BangumiDetailActivity : AppCompatActivity() {
         // 设置标签
         val tagList = BangumiUtils.getTags(data)
         mBinding.bangumiTags.setTags(tagList)
-
+        mBinding.bangumiTags.setOnTagClickListener(object : TagGroupView.OnTagClickListener {
+            override fun onTagClick(tag: TagGroupView.Tag, position: Int) {
+                SearchActivity.startWithTag(this@BangumiDetailActivity, tag.text)
+            }
+        })
     }
 
 

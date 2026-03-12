@@ -1,5 +1,7 @@
 package com.gaoshiqi.otakumap.search
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -45,6 +47,20 @@ class SearchActivity : AppCompatActivity() {
     private var hasSearchResult = false
     private var isEditMode = false
 
+    companion object {
+        private const val EXTRA_TAG = "extra_tag"
+
+        /**
+         * 携带标签跳转搜索页，自动以该标签为筛选条件执行搜索
+         */
+        fun startWithTag(context: Context, tag: String) {
+            val intent = Intent(context, SearchActivity::class.java).apply {
+                putExtra(EXTRA_TAG, tag)
+            }
+            context.startActivity(intent)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -61,6 +77,7 @@ class SearchActivity : AppCompatActivity() {
         initObserver()
         setupBackPressHandler()
         setupFilterResult()
+        handleTagIntent()
     }
 
     private fun initView() {
@@ -95,6 +112,16 @@ class SearchActivity : AppCompatActivity() {
             ) ?: return@setFragmentResultListener
             mViewModel.handleIntent(SearchIntent.UpdateFilter(filterState))
         }
+    }
+
+    /**
+     * 处理从详情页标签点击跳转过来的场景：
+     * 设置标签筛选条件并自动触发搜索
+     */
+    private fun handleTagIntent() {
+        val tag = intent.getStringExtra(EXTRA_TAG) ?: return
+        val filterState = SearchFilterState.DEFAULT.copy(tags = listOf(tag))
+        mViewModel.handleIntent(SearchIntent.UpdateFilter(filterState))
     }
 
     private fun setupHistoryView() {
