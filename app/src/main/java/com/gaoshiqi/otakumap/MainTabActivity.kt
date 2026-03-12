@@ -47,7 +47,6 @@ class MainTabActivity : AppCompatActivity() {
 
     private fun loadData() {
         lifecycleScope.launch {
-            delay(1500)
             isAppReady = true
         }
     }

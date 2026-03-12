@@ -37,7 +37,7 @@
                 android:background="@drawable/bg_type_badge"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
-                android:textColor="@color/white"
+                android:textColor="@color/white_85_only"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="动画"
