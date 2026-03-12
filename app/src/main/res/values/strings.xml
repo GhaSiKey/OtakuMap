@@ -242,6 +242,7 @@
 
     <!-- Search Result Card -->
     <string name="card_air_date_format">%s started airing</string>
+    <string name="card_air_date_platform_format">%1$s started airing · %2$s</string>
     <string name="card_watching_count_format">%s watching</string>
     <string name="card_score_count_format">%s rated</string>
 

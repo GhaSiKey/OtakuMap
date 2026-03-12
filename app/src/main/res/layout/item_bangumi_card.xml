@@ -17,12 +17,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_cover"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            tools:src="@drawable/ic_cover_placeholder_36" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                tools:src="@drawable/ic_cover_placeholder_36" />
+
+            <TextView
+                android:id="@+id/tv_type_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:layout_margin="6dp"
+                android:background="@drawable/bg_type_badge"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:text="动画"
+                tools:visibility="visible" />
+        </FrameLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- 番剧信息 -->
@@ -99,6 +119,26 @@
             android:textColor="@color/black_40"
             android:textSize="12sp"
             tools:text="1K 人在追" />
+
+        <LinearLayout
+            android:id="@+id/tag_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_tag"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/black_60"
+                android:textSize="10sp"
+                tools:text="校园" />
+        </LinearLayout>
 
     </LinearLayout>
 

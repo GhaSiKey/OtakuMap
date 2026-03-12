@@ -9,11 +9,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.gaoshiqi.image.loadCover
 import com.gaoshiqi.otakumap.R
 import com.gaoshiqi.otakumap.data.bean.SearchSubject
 import com.gaoshiqi.otakumap.detail.BangumiDetailActivity
+import com.gaoshiqi.otakumap.search.filter.SubjectType
 import com.gaoshiqi.otakumap.utils.BangumiUtils
 
 /**
@@ -55,6 +57,12 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val onDoing: TextView = view.findViewById(R.id.tv_on_doing)
     private val score: TextView = view.findViewById(R.id.tv_score)
     private val scoreCount: TextView = view.findViewById(R.id.tv_score_count)
+    private val typeBadge: TextView = view.findViewById(R.id.tv_type_badge)
+    private val tagContainer: LinearLayout = view.findViewById(R.id.tag_container)
+
+    companion object {
+        private const val MAX_TAGS = 3
+    }
 
     fun setView(data: SearchSubject) {
         val context = view.context
@@ -66,8 +74,13 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         titleCn.text = data.nameCn
         sid.text = "ID: ${data.id}"
 
-        // 新接口使用 date 字段
-        airDate.text = context.getString(R.string.card_air_date_format, data.date ?: "")
+        // 日期 + 平台
+        val dateText = data.date ?: ""
+        if (!data.platform.isNullOrBlank()) {
+            airDate.text = context.getString(R.string.card_air_date_platform_format, dateText, data.platform)
+        } else {
+            airDate.text = context.getString(R.string.card_air_date_format, dateText)
+        }
 
         onDoing.text = context.getString(
             R.string.card_watching_count_format,
@@ -79,6 +92,12 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             BangumiUtils.convertCount(data.rating?.total ?: 0)
         )
 
+        // 类型角标
+        bindTypeBadge(data.type)
+
+        // 标签
+        bindTags(data)
+
         sidContainer.setOnClickListener {
             BangumiUtils.copyContentToClipboard(data.id.toString(), context)
             Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
@@ -87,5 +106,57 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         container.setOnClickListener {
             data.id?.let { BangumiDetailActivity.start(view.context, it) }
         }
+    }
+
+    private fun bindTypeBadge(type: Int?) {
+        val subjectType = type?.let { SubjectType.fromTypeId(it) }
+        if (subjectType != null) {
+            typeBadge.setText(subjectType.labelResId)
+            typeBadge.visibility = View.VISIBLE
+        } else {
+            typeBadge.visibility = View.GONE
+        }
+    }
+
+    private fun bindTags(data: SearchSubject) {
+        tagContainer.removeAllViews()
+
+        val topTags = data.tags
+            ?.sortedByDescending { it.count ?: 0 }
+            ?.take(MAX_TAGS)
+
+        if (topTags.isNullOrEmpty()) {
+            tagContainer.visibility = View.GONE
+            return
+        }
+
+        tagContainer.visibility = View.VISIBLE
+        val context = view.context
+
+        topTags.forEachIndexed { index, tag ->
+            val tagView = TextView(context).apply {
+                text = tag.name
+                textSize = 10f
+                setTextColor(ContextCompat.getColor(context, R.color.black_60))
+                setBackgroundResource(R.drawable.bg_card_tag)
+                setPadding(
+                    dpToPx(6f).toInt(), dpToPx(2f).toInt(),
+                    dpToPx(6f).toInt(), dpToPx(2f).toInt()
+                )
+            }
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            if (index > 0) {
+                params.marginStart = dpToPx(4f).toInt()
+            }
+            tagContainer.addView(tagView, params)
+        }
+    }
+
+    private fun dpToPx(dp: Float): Float {
+        return dp * view.context.resources.displayMetrics.density
     }
 }
