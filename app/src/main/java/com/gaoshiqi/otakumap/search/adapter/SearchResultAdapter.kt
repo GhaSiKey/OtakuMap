@@ -56,8 +56,8 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val score: TextView = view.findViewById(R.id.tv_score)
     private val scoreCount: TextView = view.findViewById(R.id.tv_score_count)
 
-    @SuppressLint("SetTextI18n")
     fun setView(data: SearchSubject) {
+        val context = view.context
         // 图片优先使用 images.large，如果没有则使用 image 字段
         val imageUrl = data.images?.large ?: data.image
         image.loadCover(imageUrl, R.drawable.ic_cover_placeholder_36)
@@ -67,15 +67,21 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         sid.text = "ID: ${data.id}"
 
         // 新接口使用 date 字段
-        airDate.text = "${data.date ?: ""}开播"
+        airDate.text = context.getString(R.string.card_air_date_format, data.date ?: "")
 
-        onDoing.text = "${BangumiUtils.convertCount(data.collection?.doing ?: 0)} 人在追"
+        onDoing.text = context.getString(
+            R.string.card_watching_count_format,
+            BangumiUtils.convertCount(data.collection?.doing ?: 0)
+        )
         score.text = data.rating?.score?.toString() ?: "0.0"
-        scoreCount.text = "${BangumiUtils.convertCount(data.rating?.total ?: 0)} 人打分"
+        scoreCount.text = context.getString(
+            R.string.card_score_count_format,
+            BangumiUtils.convertCount(data.rating?.total ?: 0)
+        )
 
         sidContainer.setOnClickListener {
-            BangumiUtils.copyContentToClipboard(data.id.toString(), view.context)
-            Toast.makeText(view.context, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+            BangumiUtils.copyContentToClipboard(data.id.toString(), context)
+            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         }
 
         container.setOnClickListener {

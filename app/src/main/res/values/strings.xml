@@ -240,6 +240,45 @@
     <string name="devtools_desc_crash_test">Trigger a test crash for Firebase Crashlytics verification</string>
     <string name="devtools_desc_anr_test">Block the main thread for 10s to trigger an ANR report</string>
 
+    <!-- Search Result Card -->
+    <string name="card_air_date_format">%s started airing</string>
+    <string name="card_watching_count_format">%s watching</string>
+    <string name="card_score_count_format">%s rated</string>
+
+    <!-- Search Filter -->
+    <string name="filter_title">Filter</string>
+    <string name="filter_reset">Reset</string>
+    <string name="filter_apply">Apply Filter</string>
+    <string name="filter_sort_title">Sort By</string>
+    <string name="filter_sort_match">Best Match</string>
+    <string name="filter_sort_heat">Popularity</string>
+    <string name="filter_sort_rank">Rank</string>
+    <string name="filter_sort_score">Score</string>
+    <string name="filter_type_title">Subject Type</string>
+    <string name="filter_tag_title">Tags</string>
+    <string name="filter_tag_hint">Enter tag</string>
+    <string name="filter_tag_add">Add</string>
+    <string name="filter_tag_limit">Up to %d tags allowed</string>
+    <string name="filter_tag_too_long">Tag cannot exceed %d characters</string>
+    <string name="filter_tag_duplicate">Tag already added</string>
+    <string name="filter_air_date_title">Air Date</string>
+    <string name="filter_date_start">Start date</string>
+    <string name="filter_date_end">End date</string>
+    <string name="filter_rating_title">Rating Range</string>
+    <string name="filter_rating_min">Min</string>
+    <string name="filter_rating_max">Max</string>
+    <string name="filter_rating_count_title">Rating Count</string>
+    <string name="filter_rating_count_min">Min count</string>
+    <string name="filter_rating_count_max">Max count</string>
+    <string name="filter_rank_title">Rank Range</string>
+    <string name="filter_rank_min">Best rank</string>
+    <string name="filter_rank_max">Worst rank</string>
+    <string name="filter_nsfw_title">NSFW Content</string>
+    <string name="filter_nsfw_no_filter">All</string>
+    <string name="filter_nsfw_only">NSFW Only</string>
+    <string name="filter_nsfw_exclude">Exclude</string>
+    <string name="filter_range_separator">~</string>
+
     <!-- DevTools Confirmation Dialog -->
     <string name="devtools_confirm_title">Confirm Action</string>
     <string name="devtools_confirm_crash_message">This will crash the app to test Firebase Crashlytics. Continue?</string>

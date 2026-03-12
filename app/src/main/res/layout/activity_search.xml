@@ -62,6 +62,16 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/iv_filter"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:layout_marginEnd="0dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_filter"
+            android:contentDescription="@string/filter_title" />
+
         <TextView
             android:id="@+id/tv_search"
             android:textSize="14sp"
@@ -74,6 +84,24 @@
             android:text="@string/search" />
     </LinearLayout>
 
+    <!-- 激活筛选标签栏 -->
+    <HorizontalScrollView
+        android:id="@+id/filter_chips_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/search_container">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_active_filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            app:singleLine="true" />
+    </HorizontalScrollView>
+
     <!-- 搜索历史区域 -->
     <include
         android:id="@+id/search_history_container"
@@ -81,7 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/search_container" />
+        app:layout_constraintTop_toBottomOf="@id/filter_chips_scroll" />
 
     <!-- 搜索结果列表 -->
     <androidx.recyclerview.widget.RecyclerView

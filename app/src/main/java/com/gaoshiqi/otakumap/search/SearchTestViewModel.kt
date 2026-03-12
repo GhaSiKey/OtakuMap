@@ -48,7 +48,7 @@ class SearchTestViewModel : ViewModel() {
                 mList = result.data ?: emptyList()
                 _state.value = SearchTestState.Success(mList, total)
             } catch (e: Exception) {
-                _state.value = SearchTestState.Error(e.message ?: "搜索失败")
+                _state.value = SearchTestState.Error(e.message ?: "Search failed")
             }
         }
     }
@@ -75,7 +75,7 @@ class SearchTestViewModel : ViewModel() {
                 result.data?.let { mList = mList + it }
                 _state.value = SearchTestState.Success(mList, total)
             } catch (e: Exception) {
-                _state.value = SearchTestState.LoadMoreError(e.message ?: "加载失败")
+                _state.value = SearchTestState.LoadMoreError(e.message ?: "Load failed")
             }
         }
     }

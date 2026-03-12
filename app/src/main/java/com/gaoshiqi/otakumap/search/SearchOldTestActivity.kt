@@ -146,7 +146,7 @@ class SearchOldTestActivity : AppCompatActivity() {
             mBinding.etSearch.clearFocus()
             KeyboardUtils.hideSoftKeyboard(this, mBinding.etSearch)
         } else {
-            Toast.makeText(this, "请输入搜索内容", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.search_please_input, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -156,12 +156,12 @@ class SearchOldTestActivity : AppCompatActivity() {
     }
 
     private fun showEmpty() {
-        mBinding.loadingStateView.showEmpty(message = "输入关键词开始搜索")
+        mBinding.loadingStateView.showEmpty(message = getString(R.string.search_input_hint))
         mBinding.rvResult.visibility = View.GONE
     }
 
     private fun showNoResult() {
-        mBinding.loadingStateView.showEmpty(message = "没有找到相关结果")
+        mBinding.loadingStateView.showEmpty(message = getString(R.string.search_no_result))
         mBinding.rvResult.visibility = View.GONE
     }
 
@@ -171,7 +171,7 @@ class SearchOldTestActivity : AppCompatActivity() {
     }
 
     private fun showResultCount(total: Int) {
-        mBinding.tvResultCount.text = "共找到 $total 条结果"
+        mBinding.tvResultCount.text = getString(R.string.search_result_count, total)
         mBinding.tvResultCount.visibility = View.VISIBLE
     }
 
