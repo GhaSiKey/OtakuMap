@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:contentDescription="@null"
-            tools:src="@drawable/ic_cover_placeholder_36" />
+            tools:src="@drawable/placeholder_cover" />
     </androidx.cardview.widget.CardView>
 
     <TextView

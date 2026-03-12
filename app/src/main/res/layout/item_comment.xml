@@ -25,7 +25,7 @@
                 android:id="@+id/user_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_cover_placeholder_36"
+                android:src="@drawable/placeholder_avatar"
                 android:contentDescription="@null" />
         </androidx.cardview.widget.CardView>
 

@@ -54,7 +54,7 @@ class CollectionAdapter(
                 }
             })
 
-            mBinding.cover.loadCover(item.imageUrl, R.drawable.ic_cover_placeholder_36)
+            mBinding.cover.loadCover(item.imageUrl, R.drawable.placeholder_cover)
 
             mBinding.root.setOnClickListener {
                 BangumiDetailActivity.start(context, item.id)

@@ -139,8 +139,8 @@ fun AnimeCard(
                         contentDescription = anime.displayName,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
-                        loading = placeholder(R.drawable.ic_cover_placeholder_36),
-                        failure = placeholder(R.drawable.ic_cover_placeholder_36)
+                        loading = placeholder(R.drawable.placeholder_cover),
+                        failure = placeholder(R.drawable.placeholder_cover)
                     )
 
                     // 状态角标（仅在「全部」Tab 中显示）

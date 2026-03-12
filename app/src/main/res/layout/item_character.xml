@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_cover_placeholder_36"
+            android:src="@drawable/placeholder_cover"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"/>
 

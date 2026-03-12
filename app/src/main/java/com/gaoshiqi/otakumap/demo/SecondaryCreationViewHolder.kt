@@ -275,14 +275,14 @@ class SecondaryCreationViewHolder(
 
         // 加载封面图
         if (item.coverUrl.isNotEmpty()) {
-            childBinding.ivCover.loadCover(item.coverUrl, R.drawable.ic_cover_placeholder_36)
+            childBinding.ivCover.loadCover(item.coverUrl, R.drawable.placeholder_cover)
         } else {
-            childBinding.ivCover.setImageResource(R.drawable.ic_cover_placeholder_36)
+            childBinding.ivCover.setImageResource(R.drawable.placeholder_cover)
         }
 
         // 加载头像
         if (item.authorAvatar.isNotEmpty()) {
-            childBinding.ivAvatar.loadCover(item.authorAvatar, R.drawable.ic_cover_placeholder_36)
+            childBinding.ivAvatar.loadCover(item.authorAvatar, R.drawable.placeholder_avatar)
         }
 
         // 点击事件

@@ -48,7 +48,7 @@ class BangumiCommentAdapter: ListAdapter<CommentData, BangumiCommentAdapter.Comm
             mBinding.subInfo.text = BangumiUtils.getCollectionStatus(item.type, itemView.context) + " "+ BangumiUtils.formatTimeByInterval(item.updatedAt)
             mBinding.comment.text = item.comment
 
-            mBinding.userAvatar.loadAvatar(item.user.avatar.large, R.drawable.ic_cover_placeholder_36)
+            mBinding.userAvatar.loadAvatar(item.user.avatar.large, R.drawable.placeholder_avatar)
         }
     }
 }

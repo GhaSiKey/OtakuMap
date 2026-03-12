@@ -24,7 +24,7 @@ class CustomInfoView @JvmOverloads constructor(
         ImageLoader.loadCoverWithCallback(
             imageView = mBinding.cover,
             url = imageUrl,
-            placeholder = R.drawable.ic_cover_placeholder_36,
+            placeholder = R.drawable.placeholder_landscape,
             onSuccess = {
                 if (marker.isInfoWindowShown) {
                     marker.hideInfoWindow()
