@@ -246,6 +246,11 @@
     <string name="card_watching_count_format">%s人在追</string>
     <string name="card_score_count_format">%s人打分</string>
 
+    <!-- Recent Views -->
+    <string name="recent_views_title">最近浏览</string>
+    <string name="recent_view_score_format">⭐ %1$.1f</string>
+    <string name="recent_view_no_score">暂无评分</string>
+
     <!-- Search Filter -->
     <string name="filter_title">筛选</string>
     <string name="filter_reset">重置</string>

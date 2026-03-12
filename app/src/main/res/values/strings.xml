@@ -246,6 +246,11 @@
     <string name="card_watching_count_format">%s watching</string>
     <string name="card_score_count_format">%s rated</string>
 
+    <!-- Recent Views -->
+    <string name="recent_views_title">Recent Views</string>
+    <string name="recent_view_score_format">⭐ %1$.1f</string>
+    <string name="recent_view_no_score">N/A</string>
+
     <!-- Search Filter -->
     <string name="filter_title">Filter</string>
     <string name="filter_reset">Reset</string>

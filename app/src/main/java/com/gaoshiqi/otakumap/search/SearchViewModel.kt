@@ -17,6 +17,8 @@ import com.gaoshiqi.otakumap.search.filter.RangeCondition
 import com.gaoshiqi.otakumap.search.filter.SearchFilterState
 import com.gaoshiqi.otakumap.search.filter.SortOption
 import com.gaoshiqi.otakumap.search.filter.SubjectType
+import com.gaoshiqi.otakumap.BangumiApplication
+import com.gaoshiqi.room.RecentViewEntity
 import com.gaoshiqi.room.SearchHistoryEntity
 import com.gaoshiqi.room.SearchHistoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +39,10 @@ class SearchViewModel(application: Application): AndroidViewModel(application) {
     private val searchHistoryRepository = SearchHistoryRepository(application)
     val searchHistory: LiveData<List<SearchHistoryEntity>> =
         searchHistoryRepository.allHistory.asLiveData()
+
+    private val recentViewRepository = (application as BangumiApplication).recentViewRepository
+    val recentViews: LiveData<List<RecentViewEntity>> =
+        recentViewRepository.allRecentViews.asLiveData()
 
     private val _filterState = MutableStateFlow(SearchFilterState.DEFAULT)
     val filterState: StateFlow<SearchFilterState> = _filterState.asStateFlow()

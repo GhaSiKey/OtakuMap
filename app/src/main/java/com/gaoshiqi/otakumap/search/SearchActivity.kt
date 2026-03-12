@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gaoshiqi.otakumap.R
 import com.gaoshiqi.otakumap.databinding.ActivitySearchBinding
 import com.gaoshiqi.otakumap.databinding.LayoutSearchHistoryBinding
+import com.gaoshiqi.otakumap.databinding.LayoutRecentViewsBinding
+import com.gaoshiqi.otakumap.search.adapter.RecentViewAdapter
 import com.gaoshiqi.otakumap.search.adapter.SearchResultAdapter
 import com.gaoshiqi.otakumap.search.filter.ActiveFilterChip
 import com.gaoshiqi.otakumap.search.filter.SearchFilterBottomSheet
@@ -33,6 +35,7 @@ import com.gaoshiqi.otakumap.search.filter.SearchFilterState
 import com.gaoshiqi.otakumap.utils.KeyboardUtils
 import com.gaoshiqi.otakumap.widget.SearchHistoryTagGroupView
 import com.gaoshiqi.otakumap.widget.TagGroupView
+import com.gaoshiqi.room.RecentViewEntity
 import com.gaoshiqi.room.SearchHistoryEntity
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.collectLatest
@@ -41,8 +44,10 @@ import kotlinx.coroutines.launch
 class SearchActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivitySearchBinding
     private lateinit var mHistoryBinding: LayoutSearchHistoryBinding
+    private lateinit var mRecentBinding: LayoutRecentViewsBinding
     private val mViewModel: SearchViewModel by viewModels()
     private val mAdapter = SearchResultAdapter()
+    private val mRecentAdapter = RecentViewAdapter()
     private var isLoadingMore = false
     private var hasSearchResult = false
     private var isEditMode = false
@@ -87,6 +92,7 @@ class SearchActivity : AppCompatActivity() {
 
         setupSearchBar()
         setupHistoryView()
+        setupRecentViewsView()
         setupFilterButton()
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -156,6 +162,13 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun setupRecentViewsView() {
+        mRecentBinding = LayoutRecentViewsBinding.bind(mBinding.recentViewsContainer.root)
+        mRecentBinding.rvRecentViews.adapter = mRecentAdapter
+        mRecentBinding.rvRecentViews.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun enterEditMode() {
@@ -313,6 +326,10 @@ class SearchActivity : AppCompatActivity() {
             updateHistoryView(history)
         }
 
+        mViewModel.recentViews.observe(this) { recentViews ->
+            updateRecentViewsVisibility(recentViews)
+        }
+
         mViewModel.state.observe(this) { state ->
             when (state) {
                 is SearchState.Error -> {
@@ -403,6 +420,17 @@ class SearchActivity : AppCompatActivity() {
     private fun updateHistoryVisibility() {
         val history = mViewModel.searchHistory.value ?: emptyList()
         updateHistoryView(history)
+        val recentViews = mViewModel.recentViews.value ?: emptyList()
+        updateRecentViewsVisibility(recentViews)
+    }
+
+    private fun updateRecentViewsVisibility(recentViews: List<RecentViewEntity>) {
+        if (recentViews.isEmpty() || hasSearchResult) {
+            mBinding.recentViewsContainer.root.visibility = View.GONE
+        } else {
+            mBinding.recentViewsContainer.root.visibility = View.VISIBLE
+            mRecentAdapter.setData(recentViews)
+        }
     }
 
     private fun showLoading() {
