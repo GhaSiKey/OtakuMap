@@ -30,6 +30,8 @@ data class SearchFilter(
     @SerializedName("air_date") val airDate: List<String>? = null,
     val rating: List<String>? = null,
     val rank: List<String>? = null,
+    @SerializedName("meta_tags") val metaTags: List<String>? = null,
+    @SerializedName("rating_count") val ratingCount: List<String>? = null,
     val nsfw: Boolean? = null
 )
 

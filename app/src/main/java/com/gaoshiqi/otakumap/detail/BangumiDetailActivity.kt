@@ -22,9 +22,13 @@ import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailIntent
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailState
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiDetailViewModel
 import com.gaoshiqi.otakumap.detail.viewmodel.BangumiPointsViewModel
+import com.gaoshiqi.otakumap.search.SearchActivity
 import com.gaoshiqi.otakumap.utils.BangumiUtils
+import com.gaoshiqi.otakumap.widget.TagGroupView
 import com.gaoshiqi.room.AnimeEntity
 import com.gaoshiqi.room.AnimeMarkRepository
+import com.gaoshiqi.room.RecentViewEntity
+import com.gaoshiqi.room.RecentViewRepository
 import com.gaoshiqi.image.viewer.ImageViewerActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
@@ -35,6 +39,7 @@ class BangumiDetailActivity : AppCompatActivity() {
     private val mPointsViewModel: BangumiPointsViewModel by viewModels()
     private var mSubjectId: Int = -1
     private lateinit var repository: AnimeMarkRepository
+    private lateinit var recentViewRepository: RecentViewRepository
 
     // 收藏状态管理
     private var isMarked: Boolean = false
@@ -101,8 +106,11 @@ class BangumiDetailActivity : AppCompatActivity() {
                         cover = state.data.images.large
                     )
 
-                    repository = (application as BangumiApplication).animeMarkRepository
+                    val app = application as BangumiApplication
+                    repository = app.animeMarkRepository
+                    recentViewRepository = app.recentViewRepository
                     setupMarkButton(state.data)
+                    saveRecentView(state.data)
                 }
                 is BangumiDetailState.ERROR -> {
                     showError(state.msg)
@@ -181,7 +189,11 @@ class BangumiDetailActivity : AppCompatActivity() {
         // 设置标签
         val tagList = BangumiUtils.getTags(data)
         mBinding.bangumiTags.setTags(tagList)
-
+        mBinding.bangumiTags.setOnTagClickListener(object : TagGroupView.OnTagClickListener {
+            override fun onTagClick(tag: TagGroupView.Tag, position: Int) {
+                SearchActivity.startWithTag(this@BangumiDetailActivity, tag.text)
+            }
+        })
     }
 
 
@@ -199,6 +211,20 @@ class BangumiDetailActivity : AppCompatActivity() {
         mBinding.detailContainer.visibility = View.GONE
         mBinding.loadingStateView.showError(message = msg) {
             mViewModel.processIntent(BangumiDetailIntent.Retry)
+        }
+    }
+
+    private fun saveRecentView(data: BangumiDetail) {
+        lifecycleScope.launch {
+            recentViewRepository.addRecentView(
+                RecentViewEntity(
+                    id = mSubjectId,
+                    name = data.name,
+                    nameCn = data.nameCn,
+                    imageUrl = data.images.large,
+                    score = data.rating?.score ?: 0.0
+                )
+            )
         }
     }
 

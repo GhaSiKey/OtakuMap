@@ -23,4 +23,12 @@
 
     <!-- 搜索历史标签专用颜色 - 在深色背景上保持良好对比度 -->
     <color name="history_tag_text">#99000000</color>
+
+    <!-- 筛选 Chip 颜色 -->
+    <color name="chip_selected_bg">#1976D2</color>
+    <color name="chip_selected_text">#FFFFFF</color>
+    <color name="chip_unselected_bg">#00000000</color>
+    <color name="chip_unselected_text">#616161</color>
+    <color name="chip_unselected_stroke">#BDBDBD</color>
+    <color name="chip_selected_stroke">#1976D2</color>
 </resources>

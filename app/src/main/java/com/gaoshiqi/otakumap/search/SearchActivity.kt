@@ -1,5 +1,7 @@
 package com.gaoshiqi.otakumap.search
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,25 +18,53 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gaoshiqi.otakumap.R
 import com.gaoshiqi.otakumap.databinding.ActivitySearchBinding
 import com.gaoshiqi.otakumap.databinding.LayoutSearchHistoryBinding
+import com.gaoshiqi.otakumap.databinding.LayoutRecentViewsBinding
+import com.gaoshiqi.otakumap.search.adapter.RecentViewAdapter
 import com.gaoshiqi.otakumap.search.adapter.SearchResultAdapter
+import com.gaoshiqi.otakumap.search.filter.ActiveFilterChip
+import com.gaoshiqi.otakumap.search.filter.SearchFilterBottomSheet
+import com.gaoshiqi.otakumap.search.filter.SearchFilterState
 import com.gaoshiqi.otakumap.utils.KeyboardUtils
 import com.gaoshiqi.otakumap.widget.SearchHistoryTagGroupView
 import com.gaoshiqi.otakumap.widget.TagGroupView
+import com.gaoshiqi.room.RecentViewEntity
 import com.gaoshiqi.room.SearchHistoryEntity
+import com.google.android.material.chip.Chip
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivitySearchBinding
     private lateinit var mHistoryBinding: LayoutSearchHistoryBinding
+    private lateinit var mRecentBinding: LayoutRecentViewsBinding
     private val mViewModel: SearchViewModel by viewModels()
     private val mAdapter = SearchResultAdapter()
+    private val mRecentAdapter = RecentViewAdapter()
     private var isLoadingMore = false
     private var hasSearchResult = false
     private var isEditMode = false
+
+    companion object {
+        private const val EXTRA_TAG = "extra_tag"
+
+        /**
+         * 携带标签跳转搜索页，自动以该标签为筛选条件执行搜索
+         */
+        fun startWithTag(context: Context, tag: String) {
+            val intent = Intent(context, SearchActivity::class.java).apply {
+                putExtra(EXTRA_TAG, tag)
+            }
+            context.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +81,8 @@ class SearchActivity : AppCompatActivity() {
         initView()
         initObserver()
         setupBackPressHandler()
+        setupFilterResult()
+        handleTagIntent()
     }
 
     private fun initView() {
@@ -60,10 +92,42 @@ class SearchActivity : AppCompatActivity() {
 
         setupSearchBar()
         setupHistoryView()
+        setupRecentViewsView()
+        setupFilterButton()
 
         Handler(Looper.getMainLooper()).postDelayed({
             KeyboardUtils.showSoftKeyboard(this, mBinding.searchBar)
         }, 300)
+    }
+
+    private fun setupFilterButton() {
+        mBinding.ivFilter.setOnClickListener {
+            KeyboardUtils.hideSoftKeyboard(this, mBinding.searchBar)
+            val bottomSheet = SearchFilterBottomSheet.newInstance(mViewModel.filterState.value)
+            bottomSheet.show(supportFragmentManager, SearchFilterBottomSheet.TAG)
+        }
+    }
+
+    private fun setupFilterResult() {
+        supportFragmentManager.setFragmentResultListener(
+            SearchFilterBottomSheet.REQUEST_KEY,
+            this
+        ) { _, bundle ->
+            val filterState = bundle.getParcelable<SearchFilterState>(
+                SearchFilterBottomSheet.RESULT_FILTER_STATE
+            ) ?: return@setFragmentResultListener
+            mViewModel.handleIntent(SearchIntent.UpdateFilter(filterState))
+        }
+    }
+
+    /**
+     * 处理从详情页标签点击跳转过来的场景：
+     * 设置标签筛选条件并自动触发搜索
+     */
+    private fun handleTagIntent() {
+        val tag = intent.getStringExtra(EXTRA_TAG) ?: return
+        val filterState = SearchFilterState.DEFAULT.copy(tags = listOf(tag))
+        mViewModel.handleIntent(SearchIntent.UpdateFilter(filterState))
     }
 
     private fun setupHistoryView() {
@@ -88,7 +152,6 @@ class SearchActivity : AppCompatActivity() {
         mHistoryBinding.tagGroupHistory.setOnHistoryTagActionListener(
             object : SearchHistoryTagGroupView.OnHistoryTagActionListener {
                 override fun onTagClick(keyword: String, position: Int) {
-                    // 编辑模式检查已在 SearchHistoryTagGroupView 内部处理
                     mBinding.searchBar.setText(keyword)
                     mBinding.searchBar.setSelection(keyword.length)
                     performSearch()
@@ -101,6 +164,13 @@ class SearchActivity : AppCompatActivity() {
         )
     }
 
+    private fun setupRecentViewsView() {
+        mRecentBinding = LayoutRecentViewsBinding.bind(mBinding.recentViewsContainer.root)
+        mRecentBinding.rvRecentViews.adapter = mRecentAdapter
+        mRecentBinding.rvRecentViews.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    }
+
     private fun enterEditMode() {
         isEditMode = true
         updateEditModeUI()
@@ -111,7 +181,6 @@ class SearchActivity : AppCompatActivity() {
         isEditMode = false
         updateEditModeUI()
         mHistoryBinding.tagGroupHistory.setEditMode(false)
-        // 回到默认收起状态
         mHistoryBinding.tagGroupHistory.setExpanded(false)
     }
 
@@ -133,10 +202,8 @@ class SearchActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (isEditMode) {
-                    // 编辑模式下按返回：退出编辑模式
                     exitEditMode()
                 } else {
-                    // 正常退出
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                 }
@@ -150,7 +217,6 @@ class SearchActivity : AppCompatActivity() {
             .setMessage(R.string.search_history_clear_confirm_message)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 mViewModel.handleIntent(SearchIntent.ClearAllHistory)
-                // 清空后退出编辑模式
                 exitEditMode()
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -160,7 +226,6 @@ class SearchActivity : AppCompatActivity() {
     private fun updateHistoryView(history: List<SearchHistoryEntity>) {
         if (history.isEmpty()) {
             mBinding.searchHistoryContainer.root.visibility = View.GONE
-            // 历史为空时退出编辑模式
             if (isEditMode) {
                 exitEditMode()
             }
@@ -171,7 +236,6 @@ class SearchActivity : AppCompatActivity() {
             val tags = history.map { TagGroupView.Tag(text = it.keyword) }
             mHistoryBinding.tagGroupHistory.setTags(tags)
 
-            // 如果不在编辑模式，重置为收起状态
             if (!isEditMode) {
                 mHistoryBinding.tagGroupHistory.setExpanded(false)
             }
@@ -179,7 +243,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupSearchBar() {
-        // 设置键盘回车监听
         mBinding.searchBar.setOnEditorActionListener { _, actionId, event ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
@@ -187,7 +250,6 @@ class SearchActivity : AppCompatActivity() {
                     true
                 }
                 else -> {
-                    // 处理硬件键盘回车
                     if (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER) {
                         performSearch()
                         true
@@ -198,7 +260,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        // 添加文本变化监听
         mBinding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -207,17 +268,12 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString()?.trim()
                 if (query.isNullOrEmpty()) {
-                    // 搜索框清空时：重置状态，显示空态和历史记录
                     resetToInitialState()
                 }
             }
         })
     }
 
-    /**
-     * 重置到初始状态（搜索框为空时的状态）
-     * 清空搜索结果，显示空态提示和历史记录
-     */
     private fun resetToInitialState() {
         hasSearchResult = false
         mAdapter.setData(emptyList())
@@ -227,16 +283,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun performSearch() {
         val query = mBinding.searchBar.text?.toString()?.trim()
-        if (!query.isNullOrBlank()) {
-            // 搜索前退出编辑模式
+        val hasFilter = mViewModel.filterState.value.hasActiveFilters()
+        if (!query.isNullOrBlank() || hasFilter) {
             if (isEditMode) {
                 exitEditMode()
             }
-            mViewModel.handleIntent(SearchIntent.Search(query))
+            mViewModel.handleIntent(SearchIntent.Search(query ?: ""))
             mBinding.searchBar.clearFocus()
             KeyboardUtils.hideSoftKeyboard(this, mBinding.searchBar)
         } else {
-            Toast.makeText(this, "请输入搜索内容", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.search_please_input, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -270,10 +326,13 @@ class SearchActivity : AppCompatActivity() {
             updateHistoryView(history)
         }
 
+        mViewModel.recentViews.observe(this) { recentViews ->
+            updateRecentViewsVisibility(recentViews)
+        }
+
         mViewModel.state.observe(this) { state ->
             when (state) {
                 is SearchState.Error -> {
-                    // 搜索失败：显示错误提示，回到初始状态
                     Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
                     isLoadingMore = false
                     hasSearchResult = false
@@ -281,7 +340,6 @@ class SearchActivity : AppCompatActivity() {
                     showEmpty()
                 }
                 SearchState.Idle -> {
-                    // 初始状态：显示空态和历史记录
                     hasSearchResult = false
                     showEmpty()
                 }
@@ -293,7 +351,6 @@ class SearchActivity : AppCompatActivity() {
                     isLoadingMore = false
                 }
                 SearchState.Loading -> {
-                    // 搜索中：显示加载状态，隐藏历史记录
                     hasSearchResult = false
                     mAdapter.setData(emptyList())
                     showLoading()
@@ -302,11 +359,9 @@ class SearchActivity : AppCompatActivity() {
                     isLoadingMore = false
                     hasSearchResult = state.data.isNotEmpty()
                     if (state.data.isEmpty()) {
-                        // 搜索成功但无结果：显示"没有找到结果"
                         mAdapter.setData(emptyList())
                         showNoResult()
                     } else {
-                        // 搜索成功有结果：显示结果列表
                         mAdapter.setData(state.data)
                         hideLoading()
                     }
@@ -314,11 +369,68 @@ class SearchActivity : AppCompatActivity() {
             }
             updateHistoryVisibility()
         }
+
+        // 观察筛选状态 → 更新筛选图标
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.filterState.collectLatest { filterState ->
+                    updateFilterIcon(filterState.hasActiveFilters())
+                }
+            }
+        }
+
+        // 观察激活筛选标签
+        mViewModel.activeFilterChips.observe(this) { chips ->
+            updateActiveFilterChips(chips)
+        }
+    }
+
+    private fun updateFilterIcon(hasActiveFilters: Boolean) {
+        val iconRes = if (hasActiveFilters) R.drawable.ic_filter_active else R.drawable.ic_filter
+        mBinding.ivFilter.setImageResource(iconRes)
+    }
+
+    private fun updateActiveFilterChips(chips: List<ActiveFilterChip>) {
+        val chipGroup = mBinding.chipGroupActiveFilters
+        chipGroup.removeAllViews()
+
+        if (chips.isEmpty()) {
+            mBinding.filterChipsScroll.visibility = View.GONE
+            return
+        }
+
+        mBinding.filterChipsScroll.visibility = View.VISIBLE
+        chips.forEach { filterChip ->
+            val chip = Chip(this).apply {
+                text = if (filterChip.displayText.isNotBlank()) {
+                    filterChip.displayText
+                } else {
+                    getString(filterChip.labelResId)
+                }
+                isCloseIconVisible = true
+                setOnCloseIconClickListener {
+                    mViewModel.handleIntent(SearchIntent.RemoveFilterChip(filterChip))
+                }
+                textSize = 12f
+            }
+            chipGroup.addView(chip)
+        }
     }
 
     private fun updateHistoryVisibility() {
         val history = mViewModel.searchHistory.value ?: emptyList()
         updateHistoryView(history)
+        val recentViews = mViewModel.recentViews.value ?: emptyList()
+        updateRecentViewsVisibility(recentViews)
+    }
+
+    private fun updateRecentViewsVisibility(recentViews: List<RecentViewEntity>) {
+        if (recentViews.isEmpty() || hasSearchResult) {
+            mBinding.recentViewsContainer.root.visibility = View.GONE
+        } else {
+            mBinding.recentViewsContainer.root.visibility = View.VISIBLE
+            mRecentAdapter.setData(recentViews)
+        }
     }
 
     private fun showLoading() {
@@ -327,12 +439,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmpty() {
-        mBinding.loadingStateView.showEmpty(message = "搜索你想看的番剧")
+        mBinding.loadingStateView.showEmpty(message = getString(R.string.search_hint))
         mBinding.rvSearchResult.visibility = View.GONE
     }
 
     private fun showNoResult() {
-        mBinding.loadingStateView.showEmpty(message = "没有找到相关结果")
+        mBinding.loadingStateView.showEmpty(message = getString(R.string.search_no_result))
         mBinding.rvSearchResult.visibility = View.GONE
     }
 
