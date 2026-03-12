@@ -110,8 +110,8 @@ fun AnimeCoverCenter(
             contentDescription = null,  // 外层已提供语义描述
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            loading = placeholder(R.drawable.ic_cover_placeholder_36),
-            failure = placeholder(R.drawable.ic_cover_placeholder_36)
+            loading = placeholder(R.drawable.placeholder_cover),
+            failure = placeholder(R.drawable.placeholder_cover)
         )
     }
 }

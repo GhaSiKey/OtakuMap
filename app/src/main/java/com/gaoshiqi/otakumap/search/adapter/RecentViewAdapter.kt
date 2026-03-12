@@ -41,7 +41,7 @@ class RecentViewAdapter : RecyclerView.Adapter<RecentViewAdapter.ViewHolder>() {
 
         fun bind(data: RecentViewEntity) {
             val context = view.context
-            cover.loadCover(data.imageUrl, R.drawable.ic_cover_placeholder_36)
+            cover.loadCover(data.imageUrl, R.drawable.placeholder_cover)
             title.text = data.displayName
 
             if (data.score > 0) {

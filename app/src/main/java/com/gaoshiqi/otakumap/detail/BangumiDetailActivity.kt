@@ -177,7 +177,7 @@ class BangumiDetailActivity : AppCompatActivity() {
         // 标题
         mBinding.bangumiTitle.text = data.displayTitle()
         // 封面
-        mBinding.ivCover.loadDetail(data.images.large, R.drawable.ic_cover_placeholder_36)
+        mBinding.ivCover.loadDetail(data.images.large, R.drawable.placeholder_cover)
         // 点击封面查看大图（带共享元素转场动画）
         mBinding.ivCover.setOnClickListener {
             ImageViewerActivity.startWithSharedElement(this, data.images.large, mBinding.ivCover)

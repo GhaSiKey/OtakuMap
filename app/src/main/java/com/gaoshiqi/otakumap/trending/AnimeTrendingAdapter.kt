@@ -42,7 +42,7 @@ class TrendingViewHolder(
 ): RecyclerView.ViewHolder(mBinding.root) {
     @SuppressLint("SetTextI18n")
     fun bind(position: Int, item: TrendingSubjectItem) {
-        mBinding.ivCover.loadCover(item.subject.images.large, R.drawable.ic_cover_placeholder_36)
+        mBinding.ivCover.loadCover(item.subject.images.large, R.drawable.placeholder_cover)
         mBinding.tvRank.visibility = if ((position + 1) < 100) android.view.View.VISIBLE else android.view.View.GONE
         mBinding.tvRank.text = (position + 1).toString()
         mBinding.tvTitle.text = item.subject.name

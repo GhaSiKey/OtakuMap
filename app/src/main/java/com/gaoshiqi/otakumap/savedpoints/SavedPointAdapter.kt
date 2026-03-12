@@ -34,7 +34,7 @@ class SavedPointAdapter(
 
         fun bind(point: SavedPointEntity) {
             // 地点图片
-            binding.ivPointImage.loadCover(point.pointImage, R.drawable.ic_cover_placeholder_36)
+            binding.ivPointImage.loadCover(point.pointImage, R.drawable.placeholder_cover)
 
             // 地点名称（优先中文名）
             binding.tvPointName.text = point.pointNameCn.ifEmpty { point.pointName }

@@ -28,7 +28,7 @@ class LitePointAdapter(
         private val btnOpenMaps: ImageButton = itemView.findViewById(R.id.btn_open_maps)
 
         fun bind(litePoint: LitePoint) {
-            cover.loadCover(litePoint.image, R.drawable.ic_cover_placeholder_36)
+            cover.loadCover(litePoint.image, R.drawable.placeholder_landscape)
 
             title.text = litePoint.name
             description.text = "坐标: ${litePoint.geo[0]}, ${litePoint.geo[1]}"

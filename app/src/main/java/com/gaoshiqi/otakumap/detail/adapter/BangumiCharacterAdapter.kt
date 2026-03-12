@@ -77,7 +77,7 @@ class BangumiCharacterAdapter(
             characterImage.requestLayout()
             val imageUrl = character.images?.medium
             if (!imageUrl.isNullOrEmpty()) {
-                characterImage.loadWithOriginalRatio(imageUrl, R.drawable.ic_cover_placeholder_36, columnWidth)
+                characterImage.loadWithOriginalRatio(imageUrl, R.drawable.placeholder_cover, columnWidth)
 
                 // 点击图片打开图片查看器（使用大图）
                 val largeImageUrl = character.images.large ?: imageUrl

@@ -103,7 +103,7 @@ class BangumiPointAdapter(
         private val pointEp: TextView = itemView.findViewById(R.id.pointEpisode)
 
         fun bind(point: LitePoint) {
-            pointImage.loadCover(point.image, R.drawable.ic_cover_placeholder_36)
+            pointImage.loadCover(point.image, R.drawable.placeholder_landscape)
             pointName.text = point.name
             pointId.text = "ID: " + point.id
             setEpAndTimeText(pointEp, point.ep, point.s)

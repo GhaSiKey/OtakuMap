@@ -68,7 +68,7 @@ class BangumiViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
     @SuppressLint("SetTextI18n")
     fun setView(data: SubjectSmall) {
-        image.loadCover(data.images?.large, R.drawable.ic_cover_placeholder_36)
+        image.loadCover(data.images?.large, R.drawable.placeholder_cover)
         title.text = data.name
         titleCn.text = data.nameCn
         sid.text = "ID: " + data.id

@@ -68,7 +68,7 @@ class SearchResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val context = view.context
         // 图片优先使用 images.large，如果没有则使用 image 字段
         val imageUrl = data.images?.large ?: data.image
-        image.loadCover(imageUrl, R.drawable.ic_cover_placeholder_36)
+        image.loadCover(imageUrl, R.drawable.placeholder_cover)
 
         title.text = data.name
         titleCn.text = data.nameCn
